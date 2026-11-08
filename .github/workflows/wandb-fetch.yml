@@ -1,0 +1,28 @@
+name: wandb-fetch
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: pip install --quiet requests
+      - name: Fetch wandb data
+        run: python fetch.py
+        env:
+          WANDB_API_KEY: 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
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wandb-results
+          path: |
+            runs_list.json
+            results_*.json
+            results_*.csv
